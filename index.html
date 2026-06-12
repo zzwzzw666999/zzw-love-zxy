@@ -96,12 +96,15 @@
 
   /* ===== 玻璃卡片 ===== */
   .card {
+    position: relative;
     background: rgba(255,255,255,0.06);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     border: 1px solid rgba(255,255,255,0.12);
     border-radius: 40px;
     padding: 50px 55px 40px;
+    min-height: 480px;
+    min-width: 380px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -110,15 +113,17 @@
       0 20px 60px rgba(0,0,0,0.3),
       0 0 80px rgba(255,100,150,0.08),
       inset 0 1px 0 rgba(255,255,255,0.05);
+    overflow: visible;
   }
 
-  /* ===== 表情头像 ===== */
+  /* ===== CSS 黄脸 ===== */
   .face-wrapper {
     position: relative;
     width: 150px; height: 150px;
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-shrink: 0;
   }
 
   /* 发光光环 */
@@ -130,6 +135,7 @@
     opacity: 0.3;
     animation: haloSpin 4s linear infinite;
     filter: blur(8px);
+    transition: all 0.4s ease;
   }
 
   .face-halo.happy-glow {
@@ -148,45 +154,132 @@
     to { transform: rotate(360deg); }
   }
 
-  /* 表情内圈 */
-  .face-inner {
+  /* 黄脸本体 */
+  .face {
     position: relative;
     z-index: 1;
     width: 130px; height: 130px;
     border-radius: 50%;
-    background: radial-gradient(circle at 40% 35%, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.02) 60%, transparent 100%);
+    background: radial-gradient(circle at 42% 35%, #ffe680 0%, #ffcc00 45%, #e6a800 85%, #cc8800 100%);
+    box-shadow:
+      0 8px 30px rgba(0,0,0,0.25),
+      inset 0 -6px 16px rgba(0,0,0,0.15),
+      inset 0 4px 12px rgba(255,255,255,0.2);
+    transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .face.happy-face {
+    transform: scale(1.08);
+  }
+
+  .face.sad-face {
+    transform: scale(0.95);
+  }
+
+  /* 眉毛 */
+  .eyebrow {
+    position: absolute;
+    width: 22px;
+    height: 5px;
+    background: #8B6914;
+    border-radius: 3px;
+    top: 38px;
+    transition: all 0.35s ease;
+  }
+
+  .eyebrow.left  { left: 30px; transform: rotate(-5deg); }
+  .eyebrow.right { right: 30px; transform: rotate(5deg); }
+
+  .eyebrow.worried { transform: rotate(15deg); top: 36px; }
+  .eyebrow.angry    { transform: rotate(-15deg); top: 36px; }
+
+  /* 眼睛 */
+  .eye {
+    position: absolute;
+    width: 36px;
+    height: 44px;
+    background: #fff;
+    border-radius: 50%;
+    top: 42px;
     display: flex;
     align-items: center;
     justify-content: center;
+    box-shadow: inset 0 2px 3px rgba(0,0,0,0.1), 0 1px 0 rgba(0,0,0,0.05);
   }
 
-  .emoji-face {
-    font-size: 100px;
-    transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
-    filter: drop-shadow(0 6px 20px rgba(0,0,0,0.2));
-    line-height: 1;
-    z-index: 2;
+  .eye.left  { left: 24px; }
+  .eye.right { right: 24px; }
+
+  /* 瞳孔 + 高光 */
+  .pupil {
+    width: 16px;
+    height: 16px;
+    background: radial-gradient(circle at 35% 35%, #444 0%, #111 60%, #000 100%);
+    border-radius: 50%;
+    position: relative;
+    will-change: transform;
   }
 
-  .emoji-face.happy {
-    animation: happyBounce 0.45s ease-in-out infinite alternate;
-  }
-  @keyframes happyBounce {
-    0% { transform: translateY(0) scale(1); }
-    100% { transform: translateY(-12px) scale(1.1); }
+  /* 眼睛高光 */
+  .pupil::after {
+    content: '';
+    position: absolute;
+    width: 5px;
+    height: 5px;
+    background: white;
+    border-radius: 50%;
+    top: 2px;
+    left: 3px;
+    opacity: 0.9;
   }
 
-  .emoji-face.sad {
-    animation: sadShake 0.7s ease-in-out infinite;
+  /* 嘴巴 */
+  .mouth-wrap {
+    position: absolute;
+    bottom: 28px;
+    left: 50%;
+    transform: translateX(-50%);
+    transition: all 0.35s ease;
   }
-  @keyframes sadShake {
-    0%, 100% { transform: translateX(0); }
-    15% { transform: translateX(-5px) rotate(-2deg); }
-    35% { transform: translateX(5px) rotate(2deg); }
-    55% { transform: translateX(-3px); }
-    75% { transform: translateX(3px); }
-    90% { transform: translateX(-1px); }
+
+  .mouth {
+    width: 44px;
+    height: 22px;
+    border-bottom: 3.5px solid #8B4513;
+    border-radius: 0 0 22px 22px;
+    transition: all 0.35s ease;
   }
+
+  .mouth.happy-mouth {
+    width: 52px;
+    height: 28px;
+    border-bottom-width: 4px;
+    border-radius: 0 0 28px 28px;
+  }
+
+  .mouth.sad-mouth {
+    width: 36px;
+    height: 14px;
+    border-bottom: none;
+    border-top: 3.5px solid #8B4513;
+    border-radius: 14px 14px 0 0;
+  }
+
+  /* 腮红 */
+  .blush {
+    position: absolute;
+    width: 18px;
+    height: 12px;
+    background: rgba(255, 150, 130, 0.45);
+    border-radius: 50%;
+    top: 68px;
+    transition: all 0.35s ease;
+  }
+
+  .blush.left  { left: 12px; }
+  .blush.right { right: 12px; }
+
+  .blush.deep { background: rgba(255, 120, 100, 0.6); width: 22px; height: 14px; }
 
   /* 表情周围的小星星 */
   .face-spark {
@@ -213,6 +306,8 @@
       0 2px 4px rgba(0,0,0,0.2);
     letter-spacing: 4px;
     animation: textGlow 2.5s ease-in-out infinite;
+    text-align: center;
+    flex-shrink: 0;
   }
 
   @keyframes textGlow {
@@ -227,28 +322,30 @@
     letter-spacing: 3px;
     font-style: italic;
     margin-top: -20px;
+    flex-shrink: 0;
   }
 
-  /* ===== 选项容器 ===== */
-  .options {
-    display: flex;
-    gap: 35px;
-    align-items: center;
-    margin-top: 5px;
+  /* ===== 按钮容器（绝对定位区域） ===== */
+  .btn-stage {
+    position: absolute;
+    inset: 230px 20px 30px 20px;
+    pointer-events: none;
   }
 
   /* ===== 按钮 ===== */
   .btn {
+    position: absolute;
     border: none;
     cursor: pointer;
     font-weight: 700;
     border-radius: 50px;
     transition: all 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
     outline: none;
-    position: relative;
     font-family: inherit;
     letter-spacing: 2px;
     white-space: nowrap;
+    pointer-events: auto;
+    will-change: left, top, font-size, padding, transform;
   }
 
   .btn::after {
@@ -278,6 +375,7 @@
       0 8px 25px rgba(255,60,90,0.4),
       inset 0 1px 0 rgba(255,255,255,0.2);
     border: 2px solid rgba(255,255,255,0.15);
+    z-index: 5;
   }
   .btn-yes::after {
     background: rgba(255,60,90,0.5);
@@ -296,6 +394,7 @@
     color: rgba(255,255,255,0.7);
     border: 2px solid rgba(255,255,255,0.15);
     box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+    z-index: 4;
   }
   .btn-no::after {
     background: rgba(255,255,255,0.1);
@@ -428,12 +527,21 @@
 
   /* ===== 响应式 ===== */
   @media (max-width: 500px) {
-    .card { padding: 35px 25px 30px; border-radius: 28px; gap: 20px; }
-    .emoji-face { font-size: 70px; }
+    .card { padding: 35px 20px 30px; border-radius: 28px; gap: 20px; min-width: 320px; min-height: 420px; }
     .face-wrapper { width: 110px; height: 110px; }
-    .face-inner { width: 100px; height: 100px; }
+    .face { width: 100px; height: 100px; }
+    .eye { width: 28px; height: 34px; top: 32px; }
+    .eye.left { left: 18px; } .eye.right { right: 18px; }
+    .pupil { width: 13px; height: 13px; }
+    .pupil::after { width: 4px; height: 4px; }
+    .eyebrow { width: 17px; height: 4px; top: 30px; }
+    .eyebrow.left { left: 22px; } .eyebrow.right { right: 22px; }
+    .mouth { width: 34px; height: 17px; } .mouth.happy-mouth { width: 40px; }
+    .mouth-wrap { bottom: 20px; }
+    .blush { width: 14px; height: 9px; top: 52px; }
+    .blush.left { left: 8px; } .blush.right { right: 8px; }
     .question { font-size: 22px; letter-spacing: 2px; }
-    .options { gap: 15px; }
+    .btn-stage { inset: 180px 15px 20px 15px; }
     .success-card { padding: 30px 25px; }
     .success-text { font-size: 26px; }
     .success-sub { font-size: 20px; }
@@ -453,12 +561,28 @@
 
 <!-- ===== 主页面 ===== -->
 <div class="wrapper" id="mainWrapper">
-  <div class="card">
-    <!-- 表情 -->
-    <div class="face-wrapper">
+  <div class="card" id="card">
+    <!-- 黄脸 -->
+    <div class="face-wrapper" id="faceWrapper">
       <div class="face-halo" id="faceHalo"></div>
-      <div class="face-inner">
-        <div class="emoji-face" id="emojiFace">😊</div>
+      <div class="face" id="faceEl">
+        <!-- 眉毛 -->
+        <div class="eyebrow left" id="browL"></div>
+        <div class="eyebrow right" id="browR"></div>
+        <!-- 眼睛 -->
+        <div class="eye left" id="eyeL">
+          <div class="pupil"></div>
+        </div>
+        <div class="eye right" id="eyeR">
+          <div class="pupil"></div>
+        </div>
+        <!-- 腮红 -->
+        <div class="blush left" id="blushL"></div>
+        <div class="blush right" id="blushR"></div>
+        <!-- 嘴巴 -->
+        <div class="mouth-wrap">
+          <div class="mouth" id="mouthEl"></div>
+        </div>
       </div>
     </div>
 
@@ -466,8 +590,8 @@
     <div class="question">zxy，我们在一起吧？</div>
     <div class="signature">—— zzw</div>
 
-    <!-- 选项 -->
-    <div class="options">
+    <!-- 按钮舞台（绝对定位区域） -->
+    <div class="btn-stage" id="btnStage">
       <button class="btn btn-yes" id="btnYes">💕 好的</button>
       <button class="btn btn-no" id="btnNo">🤔 我再想想</button>
     </div>
@@ -491,20 +615,28 @@
   const successPage  = document.getElementById('successPage');
   const btnYes       = document.getElementById('btnYes');
   const btnNo        = document.getElementById('btnNo');
-  const emojiFace    = document.getElementById('emojiFace');
+  const btnStage     = document.getElementById('btnStage');
+  const card         = document.getElementById('card');
   const faceHalo     = document.getElementById('faceHalo');
+  const faceEl       = document.getElementById('faceEl');
+  const mouthEl      = document.getElementById('mouthEl');
+  const browL        = document.getElementById('browL');
+  const browR        = document.getElementById('browR');
+  const blushL       = document.getElementById('blushL');
+  const blushR       = document.getElementById('blushR');
+  const eyeL         = document.getElementById('eyeL');
+  const eyeR         = document.getElementById('eyeR');
   const heartsBg     = document.getElementById('heartsBg');
   const starsEl      = document.getElementById('stars');
+  const faceWrapper  = document.getElementById('faceWrapper');
 
   // ======== 状态 ========
   let noCount = 0;
   const YES_INIT = 20, NO_INIT = 20;
-  const YES_STEP = 1.5, NO_STEP = 0.75;
+  const YES_STEP = 1.55, NO_STEP = 0.7;
   let hoverTarget = null;
-  let mouseX = 0, mouseY = 0;
-
-  const HAPPY_FACES = ['😊', '😍', '🥰', '😘', '😻', '💖'];
-  const SAD_FACES   = ['🥺', '😢', '😭', '😿', '💔', '😩'];
+  let mouseX = window.innerWidth / 2;
+  let mouseY = window.innerHeight / 2;
 
   // ======== 星光背景 ========
   for (let i = 0; i < 60; i++) {
@@ -545,31 +677,117 @@
     spark.style.setProperty('--sy', Math.sin(angle) * dist + 'px');
     spark.style.left = '50%';
     spark.style.top  = '50%';
-    const wrapper = document.querySelector('.face-wrapper');
-    wrapper.appendChild(spark);
+    faceWrapper.appendChild(spark);
     setTimeout(() => spark.remove(), 1300);
   }
   setInterval(emitFaceSpark, 1800);
 
-  // ======== 表情切换 ========
-  function updateFace() {
-    const sadIdx   = Math.min(noCount, SAD_FACES.length - 1);
-    const happyIdx = Math.min(noCount, HAPPY_FACES.length - 1);
+  // ======== 眼睛跟随鼠标 ========
+  function updateEyes() {
+    [eyeL, eyeR].forEach(eye => {
+      const pupil = eye.querySelector('.pupil');
+      const eyeRect = eye.getBoundingClientRect();
+      const eyeCX = eyeRect.left + eyeRect.width / 2;
+      const eyeCY = eyeRect.top + eyeRect.height / 2;
 
-    emojiFace.classList.remove('happy', 'sad');
+      const dx = mouseX - eyeCX;
+      const dy = mouseY - eyeCY;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+
+      // 瞳孔在眼白中可移动的最大半径
+      const maxR = (eyeRect.width - 16) / 2;
+
+      // 非线性映射：距离越远移动越大，但有上限
+      const t = Math.min(dist / 180, 1);
+      const eased = t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t; // easeInOutQuad
+
+      const moveX = dist > 1 ? (dx / dist) * maxR * eased : 0;
+      const moveY = dist > 1 ? (dy / dist) * maxR * eased : 0;
+
+      pupil.style.transform = `translate(${moveX}px, ${moveY}px)`;
+    });
+  }
+
+  // ======== 表情更新（眉毛+嘴巴+腮红） ========
+  function updateFace() {
+    const sadIdx = Math.min(noCount, 5);
+
+    // 清除所有状态
+    faceEl.classList.remove('happy-face', 'sad-face');
+    mouthEl.classList.remove('happy-mouth', 'sad-mouth');
+    browL.classList.remove('worried', 'angry');
+    browR.classList.remove('worried', 'angry');
+    blushL.classList.remove('deep');
+    blushR.classList.remove('deep');
     faceHalo.classList.remove('happy-glow', 'sad-glow');
 
     if (hoverTarget === 'yes') {
-      emojiFace.textContent = HAPPY_FACES[happyIdx];
-      emojiFace.classList.add('happy');
+      // 开心
+      faceEl.classList.add('happy-face');
+      mouthEl.classList.add('happy-mouth');
       faceHalo.classList.add('happy-glow');
+      blushL.classList.add('deep');
+      blushR.classList.add('deep');
     } else if (hoverTarget === 'no') {
-      emojiFace.textContent = SAD_FACES[sadIdx];
-      emojiFace.classList.add('sad');
+      // 难过
+      faceEl.classList.add('sad-face');
+      mouthEl.classList.add('sad-mouth');
       faceHalo.classList.add('sad-glow');
+      browL.classList.add(sadIdx >= 3 ? 'angry' : 'worried');
+      browR.classList.add(sadIdx >= 3 ? 'angry' : 'worried');
+      if (sadIdx >= 2) { blushL.classList.add('deep'); blushR.classList.add('deep'); }
     } else {
-      emojiFace.textContent = noCount === 0 ? '😊' : '🥺';
+      // 默认中性 - 如果 noCount 多的话略伤心
+      if (noCount > 0) {
+        mouthEl.classList.add('sad-mouth');
+        browL.classList.add('worried');
+        browR.classList.add('worried');
+      }
     }
+  }
+
+  // ======== 随机按钮位置 ========
+  function randomizeButtonPositions() {
+    const stageRect = btnStage.getBoundingClientRect();
+    const stageW = stageRect.width;
+    const stageH = stageRect.height;
+
+    // 获取当前按钮尺寸
+    const yesW = btnYes.offsetWidth;
+    const yesH = btnYes.offsetHeight;
+    const noW  = btnNo.offsetWidth;
+    const noH  = btnNo.offsetHeight;
+
+    // 在舞台内生成随机位置（留边距避免溢出）
+    const margin = 8;
+    const maxX1 = stageW - yesW - margin;
+    const maxY1 = stageH - yesH - margin;
+    const maxX2 = stageW - noW - margin;
+    const maxY2 = stageH - noH - margin;
+
+    let x1, y1, x2, y2;
+    let attempts = 0;
+    const minDist = 70; // 两按钮中心最小距离
+
+    do {
+      x1 = margin + Math.random() * Math.max(0, maxX1 - margin);
+      y1 = margin + Math.random() * Math.max(0, maxY1 - margin);
+      x2 = margin + Math.random() * Math.max(0, maxX2 - margin);
+      y2 = margin + Math.random() * Math.max(0, maxY2 - margin);
+
+      // 两按钮中心点
+      const cx1 = x1 + yesW / 2, cy1 = y1 + yesH / 2;
+      const cx2 = x2 + noW / 2,  cy2 = y2 + noH / 2;
+      const dist = Math.sqrt((cx1 - cx2) ** 2 + (cy1 - cy2) ** 2);
+
+      attempts++;
+      if (dist >= minDist) break;
+    } while (attempts < 60);
+
+    btnYes.style.left = x1 + 'px';
+    btnYes.style.top  = y1 + 'px';
+    btnNo.style.left  = x2 + 'px';
+    btnNo.style.top   = y2 + 'px';
   }
 
   // ======== 按钮大小 ========
@@ -606,7 +824,6 @@
   document.addEventListener('mousemove', (e) => {
     mouseX = e.clientX;
     mouseY = e.clientY;
-    // 每 200ms 在鼠标位置生成一个小爱心
     const now = Date.now();
     if (now - lastHeartTime > 200) {
       lastHeartTime = now;
@@ -620,6 +837,13 @@
     }
   });
 
+  // ======== 眼睛追踪动画循环 ========
+  function eyeLoop() {
+    updateEyes();
+    requestAnimationFrame(eyeLoop);
+  }
+  requestAnimationFrame(eyeLoop);
+
   // ======== Hover 事件 ========
   btnYes.addEventListener('mouseenter', () => { hoverTarget = 'yes'; updateFace(); });
   btnYes.addEventListener('mouseleave', () => { hoverTarget = null;  updateFace(); });
@@ -631,6 +855,8 @@
     noCount++;
     updateFace();
     updateSizes();
+    // 每次点击重新随机排布按钮
+    setTimeout(() => randomizeButtonPositions(), 50);
     const idx = Math.min(noCount - 1, teaseMsgs.length - 1);
     showTease(teaseMsgs[idx]);
   });
@@ -655,9 +881,18 @@
     }
   });
 
+  // ======== 窗口大小变化时重排按钮 ========
+  let resizeDebounce;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeDebounce);
+    resizeDebounce = setTimeout(() => randomizeButtonPositions(), 200);
+  });
+
   // ======== 初始化 ========
   updateSizes();
   updateFace();
+  // 首屏按钮随机位置（等布局完成后）
+  setTimeout(() => randomizeButtonPositions(), 100);
   console.log('💕 zzw → zxy 告白已就绪！加油！');
 })();
 </script>
