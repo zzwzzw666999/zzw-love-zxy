@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>zzw ❤️ zxy</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #1a0a1a;
+    font-family: 'PingFang SC', 'Microsoft YaHei', 'Hiragino Sans GB', sans-serif;
+    overflow: hidden;
+    user-select: none;
+    cursor: default;
+  }
+
+  /* ===== 星空渐变背景 ===== */
+  .sky-bg {
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 120% 80% at 50% 0%, #3d1e3d 0%, transparent 60%),
+      radial-gradient(ellipse 80% 60% at 20% 80%, #ff6b8a 0%, transparent 50%),
+      radial-gradient(ellipse 80% 60% at 80% 80%, #ff8e6b 0%, transparent 50%),
+      radial-gradient(ellipse 60% 50% at 50% 50%, #2d1040 0%, #1a0a1a 100%);
+    z-index: 0;
+    animation: skyShift 12s ease-in-out infinite alternate;
+  }
+
+  @keyframes skyShift {
+    0% { opacity: 0.8; }
+    100% { opacity: 1; }
+  }
+
+  /* ===== 星光粒子 ===== */
+  .stars {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .star {
+    position: absolute;
+    width: 3px; height: 3px;
+    background: white;
+    border-radius: 50%;
+    animation: twinkle ease-in-out infinite alternate;
+    box-shadow: 0 0 6px 2px rgba(255,255,255,0.4);
+  }
+
+  @keyframes twinkle {
+    0% { opacity: 0.2; transform: scale(1); }
+    100% { opacity: 1; transform: scale(1.8); }
+  }
+
+  /* ===== 飘落爱心 ===== */
+  .hearts-bg {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .floating-heart {
+    position: absolute;
+    animation: floatUp linear infinite;
+    opacity: 0.5;
+    font-size: 22px;
+    filter: blur(0.5px);
+  }
+
+  @keyframes floatUp {
+    0% { transform: translateY(110vh) rotate(0deg) scale(0); opacity: 0; }
+    10% { opacity: 0.6; }
+    85% { opacity: 0.6; }
+    100% { transform: translateY(-10vh) rotate(360deg) scale(1.3); opacity: 0; }
+  }
+
+  /* ===== 主容器 ===== */
+  .wrapper {
+    position: relative;
+    z-index: 2;
+    animation: fadeInUp 1s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(40px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ===== 玻璃卡片 ===== */
+  .card {
+    background: rgba(255,255,255,0.06);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 40px;
+    padding: 50px 55px 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 28px;
+    box-shadow:
+      0 20px 60px rgba(0,0,0,0.3),
+      0 0 80px rgba(255,100,150,0.08),
+      inset 0 1px 0 rgba(255,255,255,0.05);
+  }
+
+  /* ===== 表情头像 ===== */
+  .face-wrapper {
+    position: relative;
+    width: 150px; height: 150px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* 发光光环 */
+  .face-halo {
+    position: absolute;
+    inset: -15px;
+    border-radius: 50%;
+    background: conic-gradient(from 0deg, #ff6b8a, #ffa07a, #ff6b8a, #ffa07a, #ff6b8a);
+    opacity: 0.3;
+    animation: haloSpin 4s linear infinite;
+    filter: blur(8px);
+  }
+
+  .face-halo.happy-glow {
+    background: conic-gradient(from 0deg, #ff6b8a, #ffd700, #ff6b8a, #ffd700, #ff6b8a);
+    opacity: 0.55;
+    animation: haloSpin 2s linear infinite;
+  }
+
+  .face-halo.sad-glow {
+    background: conic-gradient(from 0deg, #8899aa, #556677, #8899aa, #556677, #8899aa);
+    opacity: 0.35;
+    filter: blur(12px);
+  }
+
+  @keyframes haloSpin {
+    to { transform: rotate(360deg); }
+  }
+
+  /* 表情内圈 */
+  .face-inner {
+    position: relative;
+    z-index: 1;
+    width: 130px; height: 130px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 40% 35%, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.02) 60%, transparent 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .emoji-face {
+    font-size: 100px;
+    transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+    filter: drop-shadow(0 6px 20px rgba(0,0,0,0.2));
+    line-height: 1;
+    z-index: 2;
+  }
+
+  .emoji-face.happy {
+    animation: happyBounce 0.45s ease-in-out infinite alternate;
+  }
+  @keyframes happyBounce {
+    0% { transform: translateY(0) scale(1); }
+    100% { transform: translateY(-12px) scale(1.1); }
+  }
+
+  .emoji-face.sad {
+    animation: sadShake 0.7s ease-in-out infinite;
+  }
+  @keyframes sadShake {
+    0%, 100% { transform: translateX(0); }
+    15% { transform: translateX(-5px) rotate(-2deg); }
+    35% { transform: translateX(5px) rotate(2deg); }
+    55% { transform: translateX(-3px); }
+    75% { transform: translateX(3px); }
+    90% { transform: translateX(-1px); }
+  }
+
+  /* 表情周围的小星星 */
+  .face-spark {
+    position: absolute;
+    pointer-events: none;
+    z-index: 3;
+    font-size: 20px;
+    animation: faceSparkUp 1.2s ease-out forwards;
+  }
+  @keyframes faceSparkUp {
+    0% { opacity: 1; transform: translate(0, 0) scale(0); }
+    50% { opacity: 1; }
+    100% { opacity: 0; transform: translate(var(--sx), var(--sy)) scale(1.3); }
+  }
+
+  /* ===== 问题文字 ===== */
+  .question {
+    font-size: 30px;
+    font-weight: 800;
+    color: #fff;
+    text-shadow:
+      0 0 20px rgba(255,120,150,0.5),
+      0 0 60px rgba(255,150,180,0.25),
+      0 2px 4px rgba(0,0,0,0.2);
+    letter-spacing: 4px;
+    animation: textGlow 2.5s ease-in-out infinite;
+  }
+
+  @keyframes textGlow {
+    0%, 100% { text-shadow: 0 0 20px rgba(255,120,150,0.5), 0 0 60px rgba(255,150,180,0.25); }
+    50% { text-shadow: 0 0 30px rgba(255,120,150,0.8), 0 0 80px rgba(255,150,180,0.5), 0 0 120px rgba(255,100,130,0.2); }
+  }
+
+  /* 署名 */
+  .signature {
+    color: rgba(255,255,255,0.5);
+    font-size: 14px;
+    letter-spacing: 3px;
+    font-style: italic;
+    margin-top: -20px;
+  }
+
+  /* ===== 选项容器 ===== */
+  .options {
+    display: flex;
+    gap: 35px;
+    align-items: center;
+    margin-top: 5px;
+  }
+
+  /* ===== 按钮 ===== */
+  .btn {
+    border: none;
+    cursor: pointer;
+    font-weight: 700;
+    border-radius: 50px;
+    transition: all 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+    outline: none;
+    position: relative;
+    font-family: inherit;
+    letter-spacing: 2px;
+    white-space: nowrap;
+  }
+
+  .btn::after {
+    content: '';
+    position: absolute;
+    inset: -3px;
+    border-radius: 54px;
+    opacity: 0;
+    transition: opacity 0.3s;
+    z-index: -1;
+    filter: blur(8px);
+  }
+
+  .btn:hover::after {
+    opacity: 1;
+  }
+
+  .btn:active {
+    transform: scale(0.93) !important;
+  }
+
+  /* 好的按钮 */
+  .btn-yes {
+    background: linear-gradient(135deg, #ff5e7a 0%, #ff3d5c 40%, #e8324a 100%);
+    color: white;
+    box-shadow:
+      0 8px 25px rgba(255,60,90,0.4),
+      inset 0 1px 0 rgba(255,255,255,0.2);
+    border: 2px solid rgba(255,255,255,0.15);
+  }
+  .btn-yes::after {
+    background: rgba(255,60,90,0.5);
+  }
+  .btn-yes:hover {
+    box-shadow:
+      0 14px 40px rgba(255,60,90,0.6),
+      0 0 60px rgba(255,100,140,0.3),
+      inset 0 1px 0 rgba(255,255,255,0.25);
+    transform: translateY(-3px);
+  }
+
+  /* 我再想想按钮 */
+  .btn-no {
+    background: rgba(255,255,255,0.08);
+    color: rgba(255,255,255,0.7);
+    border: 2px solid rgba(255,255,255,0.15);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+  }
+  .btn-no::after {
+    background: rgba(255,255,255,0.1);
+  }
+  .btn-no:hover {
+    box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+    transform: translateY(-2px);
+    border-color: rgba(255,255,255,0.25);
+  }
+
+  /* ===== 成功页 ===== */
+  .success-page {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    gap: 28px;
+    animation: fadeInUp 1s cubic-bezier(0.16, 1, 0.3, 1);
+    z-index: 2;
+    position: relative;
+  }
+
+  .success-page.show {
+    display: flex;
+  }
+
+  .success-icon {
+    font-size: 100px;
+    animation: successPop 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+    filter: drop-shadow(0 0 30px rgba(255,150,180,0.5));
+  }
+
+  @keyframes successPop {
+    0% { transform: scale(0) rotate(-10deg); }
+    60% { transform: scale(1.25) rotate(3deg); }
+    100% { transform: scale(1) rotate(0deg); }
+  }
+
+  .success-card {
+    background: rgba(255,255,255,0.06);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 36px;
+    padding: 45px 55px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    box-shadow:
+      0 20px 60px rgba(0,0,0,0.3),
+      0 0 80px rgba(255,100,150,0.1);
+  }
+
+  .success-text {
+    font-size: 38px;
+    font-weight: 800;
+    color: #fff;
+    text-shadow:
+      0 0 20px rgba(255,120,150,0.6),
+      0 0 60px rgba(255,150,180,0.3);
+    letter-spacing: 3px;
+  }
+
+  .success-sub {
+    font-size: 28px;
+    color: rgba(255,255,255,0.8);
+    letter-spacing: 4px;
+    font-weight: 600;
+    text-shadow: 0 0 15px rgba(255,150,180,0.4);
+  }
+
+  .success-emojis {
+    font-size: 42px;
+    letter-spacing: 8px;
+    animation: emojiFloat 2s ease-in-out infinite;
+  }
+  @keyframes emojiFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+
+  /* ===== 撒花粒子 ===== */
+  .sparkle {
+    position: fixed;
+    pointer-events: none;
+    font-size: 28px;
+    animation: sparkleUp 2.2s ease-out forwards;
+    z-index: 10;
+  }
+
+  @keyframes sparkleUp {
+    0% { transform: translateY(0) scale(0) rotate(0deg); opacity: 1; }
+    50% { opacity: 1; }
+    100% { transform: translateY(-350px) scale(1.6) rotate(180deg); opacity: 0; }
+  }
+
+  /* ===== 捣乱提示 ===== */
+  .tease-text {
+    position: absolute;
+    font-size: 15px;
+    color: rgba(255,255,255,0.85);
+    pointer-events: none;
+    animation: teaseFloat 1.6s ease-out forwards;
+    white-space: nowrap;
+    font-weight: 500;
+    letter-spacing: 1px;
+    text-shadow: 0 0 10px rgba(255,100,150,0.5);
+  }
+
+  @keyframes teaseFloat {
+    0% { opacity: 0; transform: translateY(10px); }
+    15% { opacity: 1; }
+    80% { opacity: 0.6; }
+    100% { opacity: 0; transform: translateY(-70px); }
+  }
+
+  /* ===== 鼠标跟随爱心 ===== */
+  .cursor-heart {
+    position: fixed;
+    pointer-events: none;
+    font-size: 16px;
+    z-index: 100;
+    animation: cursorPop 0.8s ease-out forwards;
+  }
+  @keyframes cursorPop {
+    0% { opacity: 1; transform: scale(0.5); }
+    50% { opacity: 1; transform: scale(1.3); }
+    100% { opacity: 0; transform: scale(0.8) translateY(-30px); }
+  }
+
+  /* ===== 响应式 ===== */
+  @media (max-width: 500px) {
+    .card { padding: 35px 25px 30px; border-radius: 28px; gap: 20px; }
+    .emoji-face { font-size: 70px; }
+    .face-wrapper { width: 110px; height: 110px; }
+    .face-inner { width: 100px; height: 100px; }
+    .question { font-size: 22px; letter-spacing: 2px; }
+    .options { gap: 15px; }
+    .success-card { padding: 30px 25px; }
+    .success-text { font-size: 26px; }
+    .success-sub { font-size: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- 星空背景 -->
+<div class="sky-bg"></div>
+
+<!-- 星光 -->
+<div class="stars" id="stars"></div>
+
+<!-- 飘落爱心 -->
+<div class="hearts-bg" id="heartsBg"></div>
+
+<!-- ===== 主页面 ===== -->
+<div class="wrapper" id="mainWrapper">
+  <div class="card">
+    <!-- 表情 -->
+    <div class="face-wrapper">
+      <div class="face-halo" id="faceHalo"></div>
+      <div class="face-inner">
+        <div class="emoji-face" id="emojiFace">😊</div>
+      </div>
+    </div>
+
+    <!-- 问题 -->
+    <div class="question">zxy，我们在一起吧？</div>
+    <div class="signature">—— zzw</div>
+
+    <!-- 选项 -->
+    <div class="options">
+      <button class="btn btn-yes" id="btnYes">💕 好的</button>
+      <button class="btn btn-no" id="btnNo">🤔 我再想想</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 成功页 ===== -->
+<div class="success-page" id="successPage">
+  <div class="success-icon">😍</div>
+  <div class="success-card">
+    <div class="success-text">zzw ❤️ zxy</div>
+    <div class="success-sub">爱你一万年 💖</div>
+    <div class="success-emojis">🥰 💕 😘</div>
+  </div>
+</div>
+
+<script>
+(function() {
+  // ======== DOM ========
+  const mainWrapper  = document.getElementById('mainWrapper');
+  const successPage  = document.getElementById('successPage');
+  const btnYes       = document.getElementById('btnYes');
+  const btnNo        = document.getElementById('btnNo');
+  const emojiFace    = document.getElementById('emojiFace');
+  const faceHalo     = document.getElementById('faceHalo');
+  const heartsBg     = document.getElementById('heartsBg');
+  const starsEl      = document.getElementById('stars');
+
+  // ======== 状态 ========
+  let noCount = 0;
+  const YES_INIT = 20, NO_INIT = 20;
+  const YES_STEP = 1.5, NO_STEP = 0.75;
+  let hoverTarget = null;
+  let mouseX = 0, mouseY = 0;
+
+  const HAPPY_FACES = ['😊', '😍', '🥰', '😘', '😻', '💖'];
+  const SAD_FACES   = ['🥺', '😢', '😭', '😿', '💔', '😩'];
+
+  // ======== 星光背景 ========
+  for (let i = 0; i < 60; i++) {
+    const s = document.createElement('div');
+    s.className = 'star';
+    s.style.left = Math.random() * 100 + '%';
+    s.style.top  = Math.random() * 100 + '%';
+    s.style.animationDuration = (1.5 + Math.random() * 3) + 's';
+    s.style.animationDelay = Math.random() * 3 + 's';
+    s.style.width = s.style.height = (1.5 + Math.random() * 2.5) + 'px';
+    starsEl.appendChild(s);
+  }
+
+  // ======== 飘落爱心 ========
+  function createHeart() {
+    const h = document.createElement('span');
+    h.className = 'floating-heart';
+    h.textContent = ['💕','❤️','💖','💗','💝','✨','🌸','🩷'][Math.floor(Math.random() * 8)];
+    h.style.left = Math.random() * 100 + '%';
+    h.style.fontSize = (14 + Math.random() * 28) + 'px';
+    const dur = 7 + Math.random() * 12;
+    h.style.animationDuration = dur + 's';
+    h.style.animationDelay = Math.random() * 6 + 's';
+    heartsBg.appendChild(h);
+    setTimeout(() => h.remove(), (dur + parseFloat(h.style.animationDelay)) * 1000 + 500);
+  }
+  for (let i = 0; i < 10; i++) setTimeout(createHeart, i * 350);
+  setInterval(createHeart, 2200);
+
+  // ======== 表情周围随机小星星 ========
+  function emitFaceSpark() {
+    const spark = document.createElement('span');
+    spark.className = 'face-spark';
+    spark.textContent = ['✨','💫','⭐','🌟'][Math.floor(Math.random() * 4)];
+    const angle = Math.random() * Math.PI * 2;
+    const dist = 40 + Math.random() * 50;
+    spark.style.setProperty('--sx', Math.cos(angle) * dist + 'px');
+    spark.style.setProperty('--sy', Math.sin(angle) * dist + 'px');
+    spark.style.left = '50%';
+    spark.style.top  = '50%';
+    const wrapper = document.querySelector('.face-wrapper');
+    wrapper.appendChild(spark);
+    setTimeout(() => spark.remove(), 1300);
+  }
+  setInterval(emitFaceSpark, 1800);
+
+  // ======== 表情切换 ========
+  function updateFace() {
+    const sadIdx   = Math.min(noCount, SAD_FACES.length - 1);
+    const happyIdx = Math.min(noCount, HAPPY_FACES.length - 1);
+
+    emojiFace.classList.remove('happy', 'sad');
+    faceHalo.classList.remove('happy-glow', 'sad-glow');
+
+    if (hoverTarget === 'yes') {
+      emojiFace.textContent = HAPPY_FACES[happyIdx];
+      emojiFace.classList.add('happy');
+      faceHalo.classList.add('happy-glow');
+    } else if (hoverTarget === 'no') {
+      emojiFace.textContent = SAD_FACES[sadIdx];
+      emojiFace.classList.add('sad');
+      faceHalo.classList.add('sad-glow');
+    } else {
+      emojiFace.textContent = noCount === 0 ? '😊' : '🥺';
+    }
+  }
+
+  // ======== 按钮大小 ========
+  function updateSizes() {
+    const yf = YES_INIT * Math.pow(YES_STEP, noCount);
+    const nf = NO_INIT  * Math.pow(NO_STEP, noCount);
+    btnYes.style.fontSize = yf + 'px';
+    btnYes.style.padding  = (yf * 0.4) + 'px ' + (yf * 0.85) + 'px';
+    btnNo.style.fontSize  = nf + 'px';
+    btnNo.style.padding   = (nf * 0.4) + 'px ' + (nf * 0.85) + 'px';
+  }
+
+  // ======== 捣乱提示 ========
+  const teaseMsgs = [
+    '真的要拒绝吗？🥺', 'zxy 你忍心吗？😢', '求求你了 zxy...',
+    '选项都快看不见了哦~', '别点这里了！😭', '再点就消失了哦~',
+    'zxy 你真的这么狠心吗 💔', 'zzw 好难过...', 'zzw 真的好喜欢 zxy 🥺',
+    'zxy 给个机会吧...', '😭😭😭',
+  ];
+
+  function showTease(text) {
+    const t = document.createElement('span');
+    t.className = 'tease-text';
+    t.textContent = text;
+    const r = btnNo.getBoundingClientRect();
+    t.style.left = (r.left + r.width / 2 - 55) + 'px';
+    t.style.top  = (r.top - 30) + 'px';
+    document.body.appendChild(t);
+    setTimeout(() => t.remove(), 1700);
+  }
+
+  // ======== 鼠标跟随小爱心 ========
+  let lastHeartTime = 0;
+  document.addEventListener('mousemove', (e) => {
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+    // 每 200ms 在鼠标位置生成一个小爱心
+    const now = Date.now();
+    if (now - lastHeartTime > 200) {
+      lastHeartTime = now;
+      const heart = document.createElement('span');
+      heart.className = 'cursor-heart';
+      heart.textContent = '🩷';
+      heart.style.left = (e.clientX - 8) + 'px';
+      heart.style.top  = (e.clientY - 8) + 'px';
+      document.body.appendChild(heart);
+      setTimeout(() => heart.remove(), 900);
+    }
+  });
+
+  // ======== Hover 事件 ========
+  btnYes.addEventListener('mouseenter', () => { hoverTarget = 'yes'; updateFace(); });
+  btnYes.addEventListener('mouseleave', () => { hoverTarget = null;  updateFace(); });
+  btnNo.addEventListener('mouseenter',  () => { hoverTarget = 'no';  updateFace(); });
+  btnNo.addEventListener('mouseleave',  () => { hoverTarget = null;  updateFace(); });
+
+  // ======== 点击"我再想想" ========
+  btnNo.addEventListener('click', () => {
+    noCount++;
+    updateFace();
+    updateSizes();
+    const idx = Math.min(noCount - 1, teaseMsgs.length - 1);
+    showTease(teaseMsgs[idx]);
+  });
+
+  // ======== 点击"好的" ========
+  btnYes.addEventListener('click', () => {
+    mainWrapper.style.display = 'none';
+    successPage.classList.add('show');
+
+    // 大量撒花
+    for (let i = 0; i < 50; i++) {
+      setTimeout(() => {
+        const s = document.createElement('span');
+        s.className = 'sparkle';
+        s.textContent = ['🎉','💕','🎊','✨','💖','😍','❤️','🥳','🌸','🩷','💝','🌟'][Math.floor(Math.random() * 12)];
+        s.style.left = Math.random() * 100 + '%';
+        s.style.top  = (40 + Math.random() * 40) + '%';
+        s.style.animationDuration = (1.5 + Math.random() * 2) + 's';
+        document.body.appendChild(s);
+        setTimeout(() => s.remove(), 2500);
+      }, i * 55);
+    }
+  });
+
+  // ======== 初始化 ========
+  updateSizes();
+  updateFace();
+  console.log('💕 zzw → zxy 告白已就绪！加油！');
+})();
+</script>
+</body>
+</html>
